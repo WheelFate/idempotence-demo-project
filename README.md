@@ -1,6 +1,6 @@
 # 🚀 Idempotence Demo Project
 
-![Setup Files](https://github.com/WheelFate/idempotence-demo-project/actions/workflows/setup-files.yml/badge.svg)
+![Auto File Creation](https://github.com/WheelFate/idempotence-demo-project/actions/workflows/check-and-create-file.yml/badge.svg)
 ![License](https://img.shields.io/github/license/WheelFate/idempotence-demo-project)
 ![Repo Stars](https://img.shields.io/github/stars/WheelFate/idempotence-demo-project?style=social)
 
