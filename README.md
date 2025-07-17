@@ -1,7 +1,7 @@
 # 🚀 Idempotence Demo Project
 
 ![Auto File Creation](https://github.com/WheelFate/idempotence-demo-project/actions/workflows/check-and-create-file.yml/badge.svg)
-![Setup Files](https://github.com/WheelFate/idempotence-demo-project/actions/workflows/setup-files.yml/badge.svg)
+![Setup Project Files](https://github.com/WheelFate/idempotence-demo-project/actions/workflows/setup-files.yml/badge.svg)
 
 A GitHub Actions-powered automation project that safely creates required files (like `status.txt`, `.env.example`, and `config.json`) **only if they don't exist**.
 
