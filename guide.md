@@ -1,6 +1,8 @@
 # 🔁 Automatic File Creation with GitHub Actions (Beginner Guide)
 
 ![Auto File Creation](https://github.com/WheelFate/idempotence-demo-project/actions/workflows/check-and-create-file.yml/badge.svg)
+![License](https://img.shields.io/github/license/WheelFate/idempotence-demo-project)
+![Repo Stars](https://img.shields.io/github/stars/WheelFate/idempotence-demo-project?style=social)
 
 This guide walks you through setting up a GitHub Actions workflow that **automatically checks for a file** (e.g., `status.txt`) and creates it only if it does **not** exist. This is called an **idempotent setup** — meaning it doesn’t repeat actions if they were already done.
 
