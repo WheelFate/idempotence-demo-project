@@ -1,0 +1,41 @@
+# .github/workflows/check-and-create-file.yml
+name: Demonstrate Idempotence (File Creation)
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the main branch
+    paths:
+      - '.github/workflows/check-and-create-file.yml' # Only run if this workflow file changes
+
+  workflow_dispatch: # Allows manual trigger from the Actions tab
+
+jobs:
+  ensure-file-exists:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Check if 'status.txt' already exists
+        id: check_file
+        run: |
+          if [ -f status.txt ]; then
+            echo "status.txt already exists. Skipping creation."
+            echo "exists=true" >> "$GITHUB_OUTPUT" # Set output for conditional step
+          else
+            echo "status.txt does NOT exist. Proceeding to create."
+            echo "exists=false" >> "$GITHUB_OUTPUT" # Set output for conditional step
+          fi
+
+      - name: Create 'status.txt' if it does not exist (Idempotent Step)
+        if: steps.check_file.outputs.exists == 'false' # Only run if 'exists' is false
+        run: |
+          echo "This file indicates the initial setup is complete." > status.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add status.txt
+          git commit -m "feat: Add status.txt as part of idempotent setup"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Required for git push within action
