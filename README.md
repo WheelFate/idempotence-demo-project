@@ -1,6 +1,8 @@
 # 🚀 Idempotence Demo Project
 
 ![Auto File Creation](https://github.com/WheelFate/idempotence-demo-project/actions/workflows/check-and-create-file.yml/badge.svg)
+![License](https://img.shields.io/github/license/WheelFate/idempotence-demo-project)
+![Repo Stars](https://img.shields.io/github/stars/WheelFate/idempotence-demo-project?style=social)
 
 A simple GitHub Actions demo that automatically checks for a file (`status.txt`) and creates it only if it doesn't exist — a real-world example of **idempotent automation** using built-in GitHub tools.
 
