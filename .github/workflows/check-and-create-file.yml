@@ -1,40 +1,67 @@
-# .github/workflows/check-and-create-file.yml
-name: Demonstrate Idempotence (File Creation)
+name: Setup Project Files (Idempotent Multi-File)
 
 on:
   push:
     branches:
       - main
-
   workflow_dispatch:
 
 jobs:
-  ensure-file-exists:
+  setup-files:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository code with write token
+      - name: Checkout code with write token
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check if 'status.txt' already exists
-        id: check_file
+      - name: Check for required files
+        id: check_files
         run: |
-          if [ -f status.txt ]; then
-            echo "status.txt already exists. Skipping creation."
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "status.txt does NOT exist. Proceeding to create."
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+          MISSING=()
+
+          if [ ! -f status.txt ]; then
+            echo "status.txt is missing"
+            MISSING+=("status.txt")
           fi
 
-      - name: Create and commit status.txt
-        if: steps.check_file.outputs.exists == 'false'
+          if [ ! -f .env.example ]; then
+            echo ".env.example is missing"
+            MISSING+=(".env.example")
+          fi
+
+          if [ ! -f config.json ]; then
+            echo "config.json is missing"
+            MISSING+=("config.json")
+          fi
+
+          echo "missing_files=${MISSING[*]}" >> $GITHUB_OUTPUT
+          echo "file_count=${#MISSING[@]}" >> $GITHUB_OUTPUT
+
+      - name: Create missing files (if any)
+        if: steps.check_files.outputs.file_count != '0'
         run: |
-          echo "This file indicates the initial setup is complete." > status.txt
+          for FILE in ${{ steps.check_files.outputs.missing_files }}; do
+            case "$FILE" in
+              "status.txt")
+                echo "This file indicates the initial setup is complete." > status.txt
+                ;;
+              ".env.example")
+                echo "DB_HOST=localhost" > .env.example
+                echo "DB_PORT=3306" >> .env.example
+                ;;
+              "config.json")
+                echo '{ "debug": true, "version": "1.0.0" }' > config.json
+                ;;
+            esac
+          done
+
+      - name: Commit and push changes
+        if: steps.check_files.outputs.file_count != '0'
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add status.txt
-          git commit -m "feat: Add status.txt as part of idempotent setup"
+          git add status.txt .env.example config.json || true
+          git commit -m "feat: Add missing setup files [auto-generated]" || echo "Nothing to commit"
           git push
